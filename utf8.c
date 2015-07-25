@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <cbase/utf8.h>
 
-
 /**
  * Return whether successful and assign string length and number of code points
  * in the string.
@@ -48,9 +47,40 @@ cb_bool cb_utf8_count_codepts(const cb_char* str, cb_size* slen, cb_size* ncp)
  * Return whether successful and assign string length and number of code points
  * in the string.
  */
+
+CBASE_INLINE cb_bool is_utf16_surr_leading(cb_char16 ch)
+{
+    return (0xD800 <= ch) && (ch <= 0xDBFF);
+}
+
+CBASE_INLINE cb_bool is_utf16_surr_trailing(cb_char16 ch)
+{
+    return (0xDC00 <= ch) && (ch <= 0xDFFF);
+}
+
+
 cb_bool cb_utf16_count_codepts(const cb_char16* str, cb_size* slen, cb_size* ncp)
 {
-    return CB_FALSE;
+    cb_size len = 0;
+    cb_size cp = 0;
+    cb_char16 ch = 0;
+    cb_bool prevsurr = CB_FALSE;
+    while ((ch = *(str++)) != (cb_char16)0) {
+        ++len;
+        if (prevsurr) {
+            if (!is_utf16_surr_trailing(ch)) { return CB_FALSE; }
+            ++cp;
+            prevsurr = is_utf16_surr_leading(ch);
+        } else {
+            if (is_utf16_surr_trailing(ch)) { return CB_FALSE; }
+            if (is_utf16_surr_leading(ch)) { prevsurr = CB_TRUE;  continue; }
+            ++cp;
+            prevsurr = CB_FALSE;
+        }
+    }
+    *slen = len;
+    *ncp = cp;
+    return CB_TRUE;
 }
 
 
@@ -60,7 +90,10 @@ cb_bool cb_utf16_count_codepts(const cb_char16* str, cb_size* slen, cb_size* ncp
  */
 cb_bool cb_utf32_count_codepts(const cb_char32* str, cb_size* slen)
 {
-    return CB_FALSE;
+    cb_size len = 0;
+    while (*(str++) != (cb_char32)0) { ++len; }
+    *slen = len;
+    return CB_TRUE;
 }
 
 
