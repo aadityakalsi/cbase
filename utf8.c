@@ -108,7 +108,7 @@ cb_uint8 cb_utf32_utf8_next(const cb_char32** str, cb_char* cp)
  */
 struct cb_utf8_utf16_cvt_tag
 {
-
+    cb_uint32 state;
 };
 
 
@@ -149,7 +149,7 @@ void cb_utf8_utf16_buffer(
  */
 struct cb_utf8_utf32_cvt_tag
 {
-
+    cb_uint32 state;
 };
 
 /**
@@ -188,7 +188,7 @@ void cb_utf8_utf32_buffer(
  */
 struct cb_utf16_utf8_cvt_tag
 {
-
+    cb_uint32 state;
 };
 
 /**
@@ -228,7 +228,7 @@ void cb_utf16_utf8_buffer(
  */
 struct cb_utf32_utf8_cvt_tag
 {
-
+    cb_uint32 state;
 };
 
 
