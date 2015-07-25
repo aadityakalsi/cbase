@@ -25,6 +25,14 @@ TEST_FUNC( invariants )
     TEST_TRUE( sizeof(cb_uint64) == 8 );
     TEST_TRUE( sizeof(float)     == 4 );
     TEST_TRUE( sizeof(double)    == 8 );
+#if CBASE_32_BIT
+    TEST_TRUE( sizeof(cb_size)   == 4 );
+    TEST_TRUE( sizeof(cb_ssize)  == 4 );
+#endif
+#if CBASE_64_BIT
+    TEST_TRUE( sizeof(cb_size)   == 8 );
+    TEST_TRUE( sizeof(cb_ssize)  == 8 );
+#endif
 }
 
 void SetupTests(void)

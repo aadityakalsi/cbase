@@ -28,8 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef CBASE_INTS_H
 #define CBASE_INTS_H
 
-#define CBASE_32_BIT sizeof(void*) == 4
-#define CBASE_64_BIT sizeof(void*) == 8
+#include <cbase/buildsym.h>
+
 
 typedef char                cb_char;
 typedef unsigned char       cb_uchar;
@@ -46,6 +46,14 @@ typedef unsigned long long  cb_uint64;
 typedef float               cb_float;
 typedef double              cb_double;
 
-#define CBASE_BIG_ENDIAN !*(cb_uchar*)&(cb_uint16){1}
+#if CBASE_32_BIT
+typedef cb_uint32           cb_size;
+typedef cb_int32            cb_ssize;
+#endif/*CBASE_32_BIT*/
+
+#if CBASE_64_BIT
+typedef cb_uint64           cb_size;
+typedef cb_int64            cb_ssize;
+#endif/*CBASE_32_BIT*/
 
 #endif//CBASE_INTS_H

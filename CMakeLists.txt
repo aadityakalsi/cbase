@@ -33,6 +33,11 @@ include("cmake/ProjTools.cmake")
 # cbase                                   #
 # --------------------------------------- #
 
+# - configure buildsym.h
+file(READ buildsym.h.config buildsym_config)
+string(REPLACE "CMAKE_PTR_SIZE" "${CMAKE_SIZEOF_VOID_P}" buildsym_config "${buildsym_config}")
+file(WRITE buildsym.h "${buildsym_config}")
+
 set(CBASE cbase)
 
 set(CBASE_PUB_HDRS
