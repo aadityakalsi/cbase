@@ -29,11 +29,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define CBASE_LIB_H
 
 #include <cbase/buildsym.h>
+#include <cbase/ints.h>
 
 CBASE_API
 /**
  *
  */
-const char* cbVersion();
+const cb_char* cb_version();
 
 #endif//CBASE_LIB_H

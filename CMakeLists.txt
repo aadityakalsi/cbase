@@ -38,6 +38,7 @@ set(CBASE cbase)
 set(CBASE_PUB_HDRS
     buildsym.h;
     lib.h;
+    ints.h;
     buffer.h)
 
 set(CBASE_INT_HDRS

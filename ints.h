@@ -21,13 +21,31 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /**
- * \file lib.c
+ * \file ints.h
  * \date 2015
  */
 
-#include <cbase/lib.h>
+#ifndef CBASE_INTS_H
+#define CBASE_INTS_H
 
-const cb_char* cb_version()
-{
-    return CBASE_LIB_VERSION;
-}
+#define CBASE_32_BIT sizeof(void*) == 4
+#define CBASE_64_BIT sizeof(void*) == 8
+
+typedef char                cb_char;
+typedef unsigned char       cb_uchar;
+typedef char                cb_int8;
+typedef unsigned char       cb_uint8;
+typedef short               cb_int16;
+typedef unsigned short      cb_uint16;
+typedef unsigned short      cb_char16;
+typedef int                 cb_int32;
+typedef unsigned int        cb_uint32;
+typedef unsigned int        cb_char32;
+typedef long long           cb_int64;
+typedef unsigned long long  cb_uint64;
+typedef float               cb_float;
+typedef double              cb_double;
+
+#define CBASE_BIG_ENDIAN !*(cb_uchar*)&(cb_uint16){1}
+
+#endif//CBASE_INTS_H

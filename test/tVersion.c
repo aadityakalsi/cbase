@@ -15,11 +15,10 @@
 
 TEST_FUNC( version )
 {
-    TEST_TRUE( strcmp(cbVersion(), "0.1.1") == 0 );
+    TEST_TRUE( strcmp(cb_version(), "0.1.1") == 0 );
 }
 
 void SetupTests(void)
 {
-    /* Correctness tests */
     REG_TEST( version );
 }
