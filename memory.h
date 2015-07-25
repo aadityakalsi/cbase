@@ -33,11 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cbase/buildsym.h>
 #include <cbase/ints.h>
 
-/* STDLIB includes
- */
-#include <stdlib.h>
-#include <string.h>
-
 #if !defined(NDEBUG)
 
 CBASE_API
