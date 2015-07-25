@@ -29,15 +29,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <cbase/memory.h>
 
-#if !defined(_MSC_VER)
-#  define _XOPEN_SOURCE 600
-#endif/*defined(_MSC_VER)*/
+/* PKG INT includes
+ */
+#include "cbase/stdlib.h"
 
 /* STDLIB includes
  */
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #if defined(_MSC_VER)

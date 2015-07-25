@@ -49,7 +49,7 @@ set(CBASE_PUB_HDRS
     buffer.h)
 
 set(CBASE_INT_HDRS
-    )
+    stdlib.h)
 
 set(CBASE_LIB_SRCS
     lib.c;
