@@ -4,9 +4,15 @@
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
 
+set(CBASE_DOC_HDRS )
+foreach(hdr ${CBASE_PUB_HDRS})
+  set(CBASE_DOC_HDRS "${PROJECT_SOURCE_DIR}/${hdr} ${CBASE_DOC_HDRS}")
+endforeach()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
 set(doxyfile Doxyfile)
+
 
 add_hdrs_ide(${doxyfile})
 

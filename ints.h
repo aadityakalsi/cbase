@@ -30,35 +30,55 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cbase/buildsym.h>
 
-
+/*! 8-bit character type */
 typedef char                cb_char;
+/*! 8-bit unsigned character type */
 typedef unsigned char       cb_uchar;
+/*! 8-bit integer type */
 typedef char                cb_int8;
+/*! 8-bit unsigned integer type */
 typedef unsigned char       cb_uint8;
+/*! 16-bit integer type */
 typedef short               cb_int16;
+/*! 16-bit unsigned integer type */
 typedef unsigned short      cb_uint16;
+/*! 16-bit character type */
 typedef unsigned short      cb_char16;
+/*! 32-bit integer type */
 typedef int                 cb_int32;
+/*! 32-bit unsigned integer type */
 typedef unsigned int        cb_uint32;
+/*! 32-bit character type */
 typedef unsigned int        cb_char32;
+/*! 64-bit integer type */
 typedef long long           cb_int64;
+/*! 64-bit unsigned integer type */
 typedef unsigned long long  cb_uint64;
+/*! 32-bit floating point type */
 typedef float               cb_float;
+/*! 64-bit floating point type */
 typedef double              cb_double;
 
 #if CBASE_32_BIT
+/*! size type */
 typedef cb_uint32           cb_size;
+/*! signed size type */
 typedef cb_int32            cb_ssize;
 #endif/*CBASE_32_BIT*/
 
 #if CBASE_64_BIT
+/*! signed size type */
 typedef cb_uint64           cb_size;
+/*! signed size type */
 typedef cb_int64            cb_ssize;
 #endif/*CBASE_32_BIT*/
 
+/*! boolean type */
 typedef cb_uchar            cb_bool;
 
+/*! boolean true value */
 #define CB_TRUE             (cb_bool)1
+/*! boolean false value */
 #define CB_FALSE            (cb_bool)0
 
 #endif//CBASE_INTS_H
