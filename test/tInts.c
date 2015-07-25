@@ -33,6 +33,9 @@ TEST_FUNC( invariants )
     TEST_TRUE( sizeof(cb_size)   == 8 );
     TEST_TRUE( sizeof(cb_ssize)  == 8 );
 #endif
+    TEST_TRUE( sizeof(cb_bool)   == 1 );
+    TEST_TRUE( CB_TRUE   );
+    TEST_TRUE( !CB_FALSE );
 }
 
 void SetupTests(void)

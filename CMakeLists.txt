@@ -44,13 +44,15 @@ set(CBASE_PUB_HDRS
     buildsym.h;
     lib.h;
     ints.h;
+    utf8.h;
     buffer.h)
 
 set(CBASE_INT_HDRS
     )
 
 set(CBASE_LIB_SRCS
-    lib.c)
+    lib.c;
+    utf8.c)
 
 # Lib version
 set(CBASE_VERSION_MAJOR 0.1)

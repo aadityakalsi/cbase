@@ -56,4 +56,9 @@ typedef cb_uint64           cb_size;
 typedef cb_int64            cb_ssize;
 #endif/*CBASE_32_BIT*/
 
+typedef cb_uchar            cb_bool;
+
+#define CB_TRUE             (cb_bool)1
+#define CB_FALSE            (cb_bool)0
+
 #endif//CBASE_INTS_H
