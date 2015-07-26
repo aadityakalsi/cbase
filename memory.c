@@ -134,7 +134,7 @@ void cbase_dumpmem_s(void)
 
 void* cbase_allocate_debug(cb_size sz, const cb_char* file, int line)
 {
-    malloc_info *mi = (malloc_info*)cbase_allocate(sz + sizeof(*mi));
+    malloc_info* mi = (malloc_info*)cbase_allocate(sz + sizeof(*mi));
     if (mi == NULL) return mi;
     mi->file = file;
     mi->line = line;
@@ -151,7 +151,7 @@ void* cbase_allocate_debug(cb_size sz, const cb_char* file, int line)
     return mi + 1;
 }
 
-void* cbase_reallocate_debug(void* m, cb_size sz, const cb_char* file, int line)
+void* cbase_reallocate_debug(void* ptr, cb_size sz, const cb_char* file, int line)
 {
     if (ptr == NULL) {
         return cbase_allocate_debug(sz, file, line);
@@ -160,7 +160,7 @@ void* cbase_reallocate_debug(void* m, cb_size sz, const cb_char* file, int line)
         return NULL;
     } else {
         malloc_info* mi = (malloc_info*)ptr - 1;
-        if (sz <= mi->size)
+        if (sz <= mi->size) {
             return ptr;
         } else {
 #ifdef CBASE_REALLOC_PRESERVE_MALLOC_FILELINE
@@ -170,17 +170,17 @@ void* cbase_reallocate_debug(void* m, cb_size sz, const cb_char* file, int line)
 #endif
             if (q) {
                 memcpy(q, ptr, mi->size);
-                cbase_allocate_debug(ptr);
+                cbase_deallocate_debug(ptr);
             }
             return q;
         }
     }
 }
 
-void cbase_deallocate_debug(void *ptr)
+void cbase_deallocate_debug(void* ptr)
 {
     if (ptr != NULL) {
-        malloc_info *mi = (malloc_info*)ptr - 1;
+        malloc_info* mi = (malloc_info*)ptr - 1;
         mi->size = ~mi->size;
 #if !defined(CBASE_DEBUG_MEM_SHOW_ALL)
         if (mi->prev == NULL) {
