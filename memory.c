@@ -95,7 +95,7 @@ struct malloc_info_t
    MALLOC_INFO_FIELDS;
    char padding[
             (((sizeof(struct malloc_info_data_t)/CBASE_MEM_ALIGN)+1)*CBASE_MEM_ALIGN)
-            - CBASE_MEM_ALIGN
+            - sizeof(struct malloc_info_data_t)
                ];
 };
 
