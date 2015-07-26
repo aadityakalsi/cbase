@@ -33,6 +33,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cbase/buildsym.h>
 #include <cbase/ints.h>
 
+/* Alignment in bytes */
+#define CBASE_MEM_ALIGN 8
+
 #if !defined(NDEBUG)
 
 CBASE_API
@@ -40,6 +43,12 @@ CBASE_API
  *
  */
 void* cbase_allocate_debug(cb_size sz, const cb_char* file, cb_int32 line);
+
+CBASE_API
+/**
+ *
+ */
+void* cbase_reallocate_debug(void* ptr, cb_size sz, const cb_char* file, cb_int32 line);
 
 CBASE_API
 /**
@@ -57,6 +66,11 @@ void* cbase_callocate_debug(cb_size sz, const cb_char* file, cb_int32 line);
  *
  */
 #  define cbase_alloc(x) cbase_allocate_debug((x), __FILE__, __LINE__)
+
+/**
+ *
+ */
+#  define cbase_realloc(x, sz) cbase_reallocate_debug((x), (sz), __FILE__, __LINE__)
 
 /**
  *
@@ -80,6 +94,12 @@ CBASE_API
 /**
  *
  */
+void* cbase_reallocate(void* mem, cb_size sz);
+
+CBASE_API
+/**
+ *
+ */
 void cbase_deallocate(void* mem);
 
 CBASE_API
@@ -92,6 +112,11 @@ void* cbase_callocate(cb_size sz);
  *
  */
 #  define cbase_alloc(x) cbase_allocate((x))
+
+/**
+ *
+ */
+#  define cbase_realloc(x, sz) cbase_reallocate((x), (sz))
 
 /**
  *

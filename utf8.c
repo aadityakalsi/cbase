@@ -33,39 +33,81 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <cbase/utf8.h>
 
+#define UTF8_NUL   0x00
+#define UTF16_NUL  0x0000
+#define UTF32_NUL  0x00000000
+
+CBASE_INLINE
+cb_int8 utf8_num_follow_chars(cb_char ch)
+{
+    cb_uchar uc = ch;
+    if (uc < 0x80) { return 0;  }
+    if (uc < 0xC0) { return -1; }
+    if (uc < 0xE0) { return 1;  }
+    if (uc < 0xF0) { return 2;  }
+    if (uc < 0xF5) { return 3;  }
+    return -1;
+}
+
+CBASE_INLINE
+cb_bool utf8_is_leading_byte(cb_char ch)
+{
+    return utf8_num_follow_chars(ch) != -1;
+}
+
+CBASE_INLINE
+cb_bool utf8_is_continuation_byte(cb_char ch)
+{
+    return (*(cb_uchar*)(&ch) & 0x80) == 0x80;
+}
+
 /**
  * Return whether successful and assign string length and number of code points
  * in the string.
  */
 cb_bool cb_utf8_count_codepts(const cb_char* str, cb_size* slen, cb_size* ncp)
 {
-    return CB_FALSE;
+    cb_int8 ntrailbytes = 0;
+    cb_size len = 0;
+    cb_size cp = 0;
+    while (*str != UTF8_NUL) {
+        ntrailbytes = utf8_num_follow_chars(*str);
+        if (ntrailbytes == -1) { return CB_FALSE; }
+        ++str;
+        len += ntrailbytes + 1;
+        while (ntrailbytes--) {
+            if (!utf8_is_continuation_byte(*(str++))) { return CB_FALSE; }
+        }
+        ++cp;
+    }
+    if (slen) { *slen = len; }
+    if (ncp)  { *ncp = cp; }
+    return CB_TRUE;
 }
 
+CBASE_INLINE
+cb_bool is_utf16_surr_leading(cb_char16 ch)
+{
+    return (0xD800 <= ch) && (ch <= 0xDBFF);
+}
+
+CBASE_INLINE
+cb_bool is_utf16_surr_trailing(cb_char16 ch)
+{
+    return (0xDC00 <= ch) && (ch <= 0xDFFF);
+}
 
 /**
  * Return whether successful and assign string length and number of code points
  * in the string.
  */
-
-CBASE_INLINE cb_bool is_utf16_surr_leading(cb_char16 ch)
-{
-    return (0xD800 <= ch) && (ch <= 0xDBFF);
-}
-
-CBASE_INLINE cb_bool is_utf16_surr_trailing(cb_char16 ch)
-{
-    return (0xDC00 <= ch) && (ch <= 0xDFFF);
-}
-
-
 cb_bool cb_utf16_count_codepts(const cb_char16* str, cb_size* slen, cb_size* ncp)
 {
     cb_size len = 0;
     cb_size cp = 0;
     cb_char16 ch = 0;
     cb_bool prevsurr = CB_FALSE;
-    while ((ch = *(str++)) != (cb_char16)0) {
+    while ((ch = *(str++)) != UTF16_NUL) {
         ++len;
         if (prevsurr) {
             if (!is_utf16_surr_trailing(ch)) { return CB_FALSE; }
@@ -78,8 +120,8 @@ cb_bool cb_utf16_count_codepts(const cb_char16* str, cb_size* slen, cb_size* ncp
             prevsurr = CB_FALSE;
         }
     }
-    *slen = len;
-    *ncp = cp;
+    if (slen) { *slen = len; }
+    if (ncp)  { *ncp = cp; }
     return CB_TRUE;
 }
 
@@ -88,11 +130,12 @@ cb_bool cb_utf16_count_codepts(const cb_char16* str, cb_size* slen, cb_size* ncp
  * Return whether successful and assign string length and number of code points
  * in the string.
  */
-cb_bool cb_utf32_count_codepts(const cb_char32* str, cb_size* slen)
+cb_bool cb_utf32_count_codepts(const cb_char32* str, cb_size* slen, cb_size* ncp)
 {
     cb_size len = 0;
-    while (*(str++) != (cb_char32)0) { ++len; }
-    *slen = len;
+    while (*(str++) != UTF32_NUL) { ++len; }
+    if (slen) { *slen = len; }
+    if (ncp)  { *ncp = len; }
     return CB_TRUE;
 }
 

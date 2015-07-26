@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* PKG includes
  */
 #include <cbase/memory.h>
+#include <cbase/ints.h>
 
 /* PKG INT includes
  */
@@ -39,35 +40,30 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string.h>
 
-#if defined(_MSC_VER)
-/*
- * On Windows, aligned APIs need malloc.h
- */
-#include <malloc.h>
-#include <Windows.h>
-#endif/*defined(_MSC_VER)*/
-
-#define ALIGN 64
-
 void* cbase_allocate(cb_size sz)
 {
-#if defined(_MSC_VER)
-    return _aligned_malloc(sz, ALIGN);
-#else
-    void* mem = NULL;
-    int ret = posix_memalign(&mem, ALIGN, sz);
-    (void)ret;
-    return mem;
-#endif
+    cb_uint8* mem = (cb_uint8*)malloc(sz + CBASE_MEM_ALIGN);
+    cb_uint8* alignmem = (cb_uint8*)
+        ((((cb_size)mem)/CBASE_MEM_ALIGN) * CBASE_MEM_ALIGN) + CBASE_MEM_ALIGN;
+    *(alignmem - 1) = (alignmem - mem);
+    return alignmem;
 }
 
-void cbase_deallocate(void* mem)
+void* cbase_reallocate(void* m, cb_size newsize)
 {
-#if defined(_MSC_VER)
-    _aligned_free(mem);
-#else
-    free(mem);
-#endif
+    cb_uint8* alignmem = m;
+    cb_uint8* orig = (alignmem - *(alignmem - 1));
+    cb_uint8* newmem = (cb_uint8*)realloc(orig, newsize + CBASE_MEM_ALIGN);
+    alignmem = (cb_uint8*)
+        ((((cb_size)newmem)/CBASE_MEM_ALIGN) * CBASE_MEM_ALIGN) + CBASE_MEM_ALIGN;
+    *(alignmem - 1) = (alignmem - newmem);
+    return alignmem;
+}
+
+void cbase_deallocate(void* m)
+{
+    cb_uint8* alignmem = m;
+    free(alignmem - *(alignmem - 1));
 }
 
 void* cbase_callocate(cb_size sz)
@@ -81,13 +77,26 @@ void* cbase_callocate(cb_size sz)
 
 typedef struct malloc_info_t malloc_info;
 
+#define MALLOC_INFO_FIELDS \
+   const cb_char*  file; \
+   int             line; \
+   int             size; \
+   malloc_info*    next; \
+   malloc_info*    prev  \
+
+struct malloc_info_data_t
+{
+    MALLOC_INFO_FIELDS;
+};
+
+/* align correctly */
 struct malloc_info_t
 {
-   const cb_char*  file;
-   int          line;
-   cb_size       size;
-   malloc_info* next;
-   malloc_info* prev;
+   MALLOC_INFO_FIELDS;
+   char padding[
+            (((sizeof(struct malloc_info_data_t)/CBASE_MEM_ALIGN)+1)*CBASE_MEM_ALIGN)
+            - CBASE_MEM_ALIGN
+               ];
 };
 
 static malloc_info* S_HEAD;
@@ -134,11 +143,38 @@ void* cbase_allocate_debug(cb_size sz, const cb_char* file, int line)
         mi->next->prev = mi;
     } else if (!S_REG_EXIT) {
         atexit(cbase_dumpmem_s);
+        S_REG_EXIT = 1;
     }
     mi->prev = NULL;
     mi->size = (int)sz;
     S_HEAD = mi;
     return mi + 1;
+}
+
+void* cbase_reallocate_debug(void* m, cb_size sz, const cb_char* file, int line)
+{
+    if (ptr == NULL) {
+        return cbase_allocate_debug(sz, file, line);
+    } else if (sz == 0) {
+        cbase_deallocate_debug(ptr);
+        return NULL;
+    } else {
+        malloc_info* mi = (malloc_info*)ptr - 1;
+        if (sz <= mi->size)
+            return ptr;
+        } else {
+#ifdef CBASE_REALLOC_PRESERVE_MALLOC_FILELINE
+            void *q = cbase_allocate_debug(sz, mi->file, mi->line);
+#else
+            void *q = cbase_allocate_debug(sz, file, line);
+#endif
+            if (q) {
+                memcpy(q, ptr, mi->size);
+                cbase_allocate_debug(ptr);
+            }
+            return q;
+        }
+    }
 }
 
 void cbase_deallocate_debug(void *ptr)

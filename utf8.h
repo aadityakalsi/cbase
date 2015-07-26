@@ -50,7 +50,7 @@ CBASE_API
  * Return whether successful and assign string length and number of code points
  * in the string.
  */
-cb_bool cb_utf32_count_codepts(const cb_char32* str, cb_size* slen);
+cb_bool cb_utf32_count_codepts(const cb_char32* str, cb_size* slen, cb_size* ncp);
 
 CBASE_API
 /**
