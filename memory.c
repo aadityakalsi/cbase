@@ -160,7 +160,7 @@ void* cbase_reallocate_debug(void* ptr, cb_size sz, const cb_char* file, int lin
         return NULL;
     } else {
         malloc_info* mi = (malloc_info*)ptr - 1;
-        if (sz <= mi->size) {
+        if ((int)sz <= mi->size) {
             return ptr;
         } else {
 #ifdef CBASE_REALLOC_PRESERVE_MALLOC_FILELINE
