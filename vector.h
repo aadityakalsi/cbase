@@ -56,9 +56,8 @@ cb_size cbase_next_pow_2(cb_size v)
 CBASE_INLINE \
 type* cbase_create_vector_##type(cb_size sz) \
 { \
-    cb_size csz = sz * sizeof(type); \
-    cb_size cap = cbase_next_pow_2(csz) / sizeof(type); \
-    cb_size* p = cbase_alloc(cap + 2 * sizeof(cb_size)); \
+    cb_size cap = cbase_next_pow_2(sz); \
+    cb_size* p = cbase_alloc(cap * sizeof(type) + 2 * sizeof(cb_size)); \
     *(p++) = sz; \
     *(p++) = cap; \
     return (type*)p; \
@@ -84,7 +83,7 @@ type* cbase_vector_##type##_resize(type* v, cb_size newsz) \
         *((cb_size*)(v) - 2) = newsz; \
     } else { \
         cb_size newcp = cbase_next_pow_2(newsz); \
-        v = cbase_realloc(v, newcp*sizeof(type) + 2*sizeof(cb_size)); \
+        v = cbase_realloc(v, newcp * sizeof(type) + 2 * sizeof(cb_size)); \
         *((cb_size*)v++) = newsz; \
         *((cb_size*)v++) = newcp; \
     } \
