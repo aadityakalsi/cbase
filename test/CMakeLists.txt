@@ -17,3 +17,6 @@ add_test_exe    (tUtf8 tUtf8.c)
 test_link_libs  (tUtf8 ${CBASE})
 create_test     (tUtf8)
 
+add_test_exe    (tVector tVector.c)
+test_link_libs  (tVector ${CBASE})
+create_test     (tVector)

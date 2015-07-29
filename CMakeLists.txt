@@ -46,7 +46,7 @@ set(CBASE_PUB_HDRS
     ints.h;
     memory.h;
     utf8.h;
-    buffer.h)
+    vector.h)
 
 set(CBASE_INT_HDRS
     stdlib.h)
