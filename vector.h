@@ -51,6 +51,9 @@ cb_size cbase_next_pow_2(cb_size v)
     return v ? v : 1;
 }
 
+/**
+ *
+ */
 #define cbase_vector(type) \
 \
 CBASE_INLINE \
