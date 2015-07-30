@@ -71,7 +71,14 @@ TEST_FUNC( vectorint )
     cbase_vector_destroy(v);
 }
 
+TEST_FUNC( vectorintTooBig )
+{
+    cb_int32* v = cbase_vector_create_cb_int32(((cb_size)-1) << 1);
+    TEST_TRUE( v == NULL );
+}
+
 void SetupTests(void)
 {
     REG_TEST( vectorint );
+    REG_TEST( vectorintTooBig );
 }

@@ -87,7 +87,9 @@ CBASE_INLINE \
 type* cbase_vector_create_##type(cb_size sz) \
 { \
     cb_size cap = cbase_next_pow_2(sz); \
+    if (cap < sz) { return NULL; } \
     cb_size* p = cbase_alloc((cap * sizeof(type)) + (2 * sizeof(cb_size))); \
+    if (!p) { return NULL; } \
     *(p++) = sz; \
     *(p++) = cap; \
     return (type*)p; \
