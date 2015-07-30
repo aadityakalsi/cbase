@@ -45,7 +45,7 @@ void* cbase_allocate(cb_size sz)
     cb_uint8* mem = (cb_uint8*)malloc(sz + CBASE_MEM_ALIGN);
     cb_uint8* alignmem = (cb_uint8*)
         ((((cb_size)mem)/CBASE_MEM_ALIGN) * CBASE_MEM_ALIGN) + CBASE_MEM_ALIGN;
-    *(alignmem - 1) = (alignmem - mem);
+    *(alignmem - 1) = (cb_uint8)(alignmem - mem);
     return alignmem;
 }
 
@@ -56,7 +56,7 @@ void* cbase_reallocate(void* m, cb_size newsize)
     cb_uint8* newmem = (cb_uint8*)realloc(orig, newsize + CBASE_MEM_ALIGN);
     alignmem = (cb_uint8*)
         ((((cb_size)newmem)/CBASE_MEM_ALIGN) * CBASE_MEM_ALIGN) + CBASE_MEM_ALIGN;
-    *(alignmem - 1) = (alignmem - newmem);
+    *(alignmem - 1) = (cb_uint8)(alignmem - newmem);
     return alignmem;
 }
 
