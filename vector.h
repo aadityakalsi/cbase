@@ -51,6 +51,24 @@ cb_size cbase_next_pow_2(cb_size v)
     return v ? v : 1;
 }
 
+CBASE_INLINE
+/**
+ *
+ */
+cb_size cbase_vector_size(const void* v)
+{
+    return *((const cb_size*)(v) - 2);
+}
+
+CBASE_INLINE
+/**
+ *
+ */
+cb_size cbase_vector_cap(const void* v)
+{
+    return *((const cb_size*)(v) - 1);
+}
+
 /**
  *
  */
@@ -67,21 +85,9 @@ type* cbase_create_vector_##type(cb_size sz) \
 } \
 \
 CBASE_INLINE \
-cb_size cbase_vector_##type##_size(const type* v) \
-{ \
-    return *((const cb_size*)(v) - 2); \
-} \
-\
-CBASE_INLINE \
-cb_size cbase_vector_##type##_cap(const type* v) \
-{ \
-    return *((const cb_size*)(v) - 1); \
-} \
-\
-CBASE_INLINE \
 type* cbase_vector_##type##_resize(type* v, cb_size newsz) \
 { \
-    cb_size cp = cbase_vector_##type##_cap(v); \
+    cb_size cp = cbase_vector_cap(v); \
     if (newsz <= cp) { \
         *((cb_size*)(v) - 2) = newsz; \
     } else { \
@@ -98,8 +104,8 @@ type* cbase_vector_##type##_resize(type* v, cb_size newsz) \
 CBASE_INLINE \
 type* cbase_vector_##type##_push(type* v, type val) \
 { \
-    cb_size sz = cbase_vector_##type##_size(v); \
-    cb_size cp = cbase_vector_##type##_cap(v); \
+    cb_size sz = cbase_vector_size(v); \
+    cb_size cp = cbase_vector_cap(v); \
     if (sz == cp) { \
         v = cbase_vector_##type##_resize(v, sz + 1); \
     } else { \
@@ -113,6 +119,7 @@ CBASE_INLINE \
 void cbase_destroy_vector_##type(type* v) \
 { \
     cbase_free((cb_size*)v - 2); \
-} \
+}
+
 
 #endif//CBASE_VECTOR_H
