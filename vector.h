@@ -83,9 +83,11 @@ type* cbase_vector_##type##_resize(type* v, cb_size newsz) \
         *((cb_size*)(v) - 2) = newsz; \
     } else { \
         cb_size newcp = cbase_next_pow_2(newsz); \
-        v = cbase_realloc(v, newcp * sizeof(type) + 2 * sizeof(cb_size)); \
-        *((cb_size*)v++) = newsz; \
-        *((cb_size*)v++) = newcp; \
+        void* p = ((cb_size*)(v) - 2); \
+        p = cbase_realloc(p, newcp * sizeof(type) + 2 * sizeof(cb_size)); \
+        *((cb_size*)p++) = newsz; \
+        *((cb_size*)p++) = newcp; \
+        v = p; \
     } \
     return v; \
 } \
