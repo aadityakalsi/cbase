@@ -96,39 +96,42 @@ type* cbase_vector_create_##type(cb_size sz) \
 } \
 \
 CBASE_INLINE \
-type* cbase_vector_resize_##type(type* v, cb_size newsz, cb_bool* success) \
+cb_bool cbase_vector_resize_##type(type** pv, cb_size newsz) \
 { \
+    type* v = *pv; \
     cb_size cp = cbase_vector_cap(v); \
     if (newsz <= cp) { \
         *((cb_size*)(v) - 2) = newsz; \
     } else { \
         cb_size newcp = cbase_next_pow_2(newsz); \
-        if (newcp < newsz) { *success = CB_FALSE; return v; } \
+        if (newcp < newsz) { return CB_FALSE; } \
         cb_size* p = ((cb_size*)(v) - 2); \
         p = cbase_realloc(p, newcp * sizeof(type) + 2 * sizeof(cb_size)); \
-        if (!p) { *success = CB_FALSE; return v; } \
+        if (!p) { return CB_FALSE; } \
         *((cb_size*)p++) = newsz; \
         *((cb_size*)p++) = newcp; \
         v = (void*)p; \
     } \
-    *success = CB_TRUE; \
-    return v; \
+    *pv = v; \
+    return CB_TRUE; \
 } \
 \
 CBASE_INLINE \
-type* cbase_vector_push_##type(type* v, type val, cb_bool* success) \
+cb_bool cbase_vector_push_##type(type** pv, type val) \
 { \
+    type* v = *pv; \
     cb_size sz = cbase_vector_size(v); \
     cb_size cp = cbase_vector_cap(v); \
     if (sz == cp) { \
-        v = cbase_vector_resize_##type(v, sz + 1, success); \
-        if (!(*success)) { return v; } \
+        if (!cbase_vector_resize_##type(&v, sz + 1)) { \
+            return CB_FALSE; \
+        } \
     } else { \
         ++(*((cb_size*)(v) - 2)); \
     } \
     v[sz] = val; \
-    *success = CB_TRUE; \
-    return v; \
+    *pv = v; \
+    return CB_TRUE; \
 }
 
 
