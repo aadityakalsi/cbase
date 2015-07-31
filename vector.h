@@ -57,7 +57,7 @@ CBASE_INLINE
  */
 cb_size cbase_vector_size(const void* v)
 {
-    return *((const cb_size*)(v) - 2);
+    return *((const cb_uint64*)(v) - 2);
 }
 
 CBASE_INLINE
@@ -66,7 +66,7 @@ CBASE_INLINE
  */
 cb_size cbase_vector_cap(const void* v)
 {
-    return *((const cb_size*)(v) - 1);
+    return *((const cb_uint64*)(v) - 1);
 }
 
 CBASE_INLINE
@@ -75,7 +75,7 @@ CBASE_INLINE
  */
 void cbase_vector_destroy(void* v)
 {
-    cbase_free((cb_size*)v - 2);
+    cbase_free((cb_uint64*)v - 2);
 }
 
 /**
@@ -88,7 +88,8 @@ type* cbase_vector_create_##type(cb_size sz) \
 { \
     cb_size cap = cbase_next_pow_2(sz); \
     if (cap < sz) { return NULL; } \
-    cb_size* p = cbase_alloc((cap * sizeof(type)) + (2 * sizeof(cb_size))); \
+    /* always use cb_uint64 to maintain alignment */ \
+    cb_uint64* p = cbase_alloc((cap * sizeof(type)) + (2 * sizeof(cb_uint64))); \
     if (!p) { return NULL; } \
     *(p++) = sz; \
     *(p++) = cap; \
@@ -101,15 +102,16 @@ cb_bool cbase_vector_resize_##type(type** pv, cb_size newsz) \
     type* v = *pv; \
     cb_size cp = cbase_vector_cap(v); \
     if (newsz <= cp) { \
-        *((cb_size*)(v) - 2) = newsz; \
+        *((cb_uint64*)(v) - 2) = newsz; \
     } else { \
         cb_size newcp = cbase_next_pow_2(newsz); \
         if (newcp < newsz) { return CB_FALSE; } \
-        cb_size* p = ((cb_size*)(v) - 2); \
-        p = cbase_realloc(p, newcp * sizeof(type) + 2 * sizeof(cb_size)); \
+        cb_uint64* p = ((cb_uint64*)(v) - 2); \
+        /* always use cb_uint64 to maintain alignment */ \
+        p = cbase_realloc(p, newcp * sizeof(type) + 2 * sizeof(cb_uint64)); \
         if (!p) { return CB_FALSE; } \
-        *((cb_size*)p++) = newsz; \
-        *((cb_size*)p++) = newcp; \
+        *(p++) = newsz; \
+        *(p++) = newcp; \
         v = (void*)p; \
     } \
     *pv = v; \
@@ -127,7 +129,7 @@ cb_bool cbase_vector_push_##type(type** pv, type val) \
             return CB_FALSE; \
         } \
     } else { \
-        ++(*((cb_size*)(v) - 2)); \
+        ++(*((cb_uint64*)(v) - 2)); \
     } \
     v[sz] = val; \
     *pv = v; \

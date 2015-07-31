@@ -77,8 +77,119 @@ TEST_FUNC( vectorintTooBig )
     cbase_vector_destroy(v);
 }
 
+/***********************************************/
+/***********************************************/
+/***********************************************/
+
+/***********************************************/
+/*Performance tests                            */
+/***********************************************/
+
+TEST_SETUP( vectorResizePerf_1000 )
+{
+    static cb_int32* pdata = NULL;
+    pdata = cbase_vector_create_cb_int32(0);
+    return &pdata;
+}
+
+TEST_CLEANUP( vectorResizePerf_1000 )
+{
+    cbase_vector_destroy(*(cb_int32**)testdata);
+}
+
+TEST_FUNC( vectorResizePerf_1000 )
+{
+    cb_int32* p = *(cb_int32**)testdata;
+    cb_int32 i = 0;
+    for (; i != 1000; ++i) {
+        cbase_vector_resize_cb_int32(&p, i);
+    }
+    *(cb_int32**)testdata = p;
+}
+
+/***********************************************/
+
+TEST_SETUP( vectorResizePerf_1000000 )
+{
+    static cb_int32* pdata = NULL;
+    pdata = cbase_vector_create_cb_int32(0);
+    return &pdata;
+}
+
+TEST_CLEANUP( vectorResizePerf_1000000 )
+{
+    cbase_vector_destroy(*(cb_int32**)testdata);
+}
+
+TEST_FUNC( vectorResizePerf_1000000 )
+{
+    cb_int32* p = *(cb_int32**)testdata;
+    cb_int32 i = 0;
+    for (; i != 1000000; ++i) {
+        cbase_vector_push_cb_int32(&p, i);
+    }
+    *(cb_int32**)testdata = p;
+}
+
+/***********************************************/
+
+TEST_SETUP( vectorPushPerf_1000 )
+{
+    static cb_int32* pdata = NULL;
+    pdata = cbase_vector_create_cb_int32(0);
+    return &pdata;
+}
+
+TEST_CLEANUP( vectorPushPerf_1000 )
+{
+    cbase_vector_destroy(*(cb_int32**)testdata);
+}
+
+TEST_FUNC( vectorPushPerf_1000 )
+{
+    cb_int32* p = *(cb_int32**)testdata;
+    cb_int32 i = 0;
+    for (; i != 1000; ++i) {
+        cbase_vector_push_cb_int32(&p, i);
+    }
+    *(cb_int32**)testdata = p;
+}
+
+/***********************************************/
+
+TEST_SETUP( vectorPushPerf_1000000 )
+{
+    static cb_int32* pdata = NULL;
+    pdata = cbase_vector_create_cb_int32(0);
+    return &pdata;
+}
+
+TEST_CLEANUP( vectorPushPerf_1000000 )
+{
+    cbase_vector_destroy(*(cb_int32**)testdata);
+}
+
+TEST_FUNC( vectorPushPerf_1000000 )
+{
+    cb_int32* p = *(cb_int32**)testdata;
+    cb_int32 i = 0;
+    for (; i != 1000000; ++i) {
+        cbase_vector_push_cb_int32(&p, i);
+    }
+    *(cb_int32**)testdata = p;
+}
+
+/***********************************************/
+
 void SetupTests(void)
 {
     REG_TEST( vectorint );
     REG_TEST( vectorintTooBig );
+    /*
+     *Performance tests
+     */
+    REG_TEST_CASE( vectorResizePerf_1000 );
+    REG_TEST_CASE( vectorResizePerf_1000000 );
+    REG_TEST_CASE( vectorPushPerf_1000 );
+    REG_TEST_CASE( vectorPushPerf_1000000 );
 }
