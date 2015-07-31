@@ -57,7 +57,7 @@ CBASE_INLINE
  */
 cb_size cbase_vector_size(const void* v)
 {
-    return *((const cb_uint64*)(v) - 2);
+    return (cb_size)*((const cb_uint64*)(v) - 2);
 }
 
 CBASE_INLINE
@@ -66,7 +66,7 @@ CBASE_INLINE
  */
 cb_size cbase_vector_cap(const void* v)
 {
-    return *((const cb_uint64*)(v) - 1);
+    return (cb_size)*((const cb_uint64*)(v) - 1);
 }
 
 CBASE_INLINE
