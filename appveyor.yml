@@ -30,7 +30,7 @@ before_build:
 
 after_build:
   - 7z a cbase_win_%configuration%_%platform%.zip %PROJ%/install
-  - appveyor PushArtifact cbase_%configuration%_%platform%.zip
+  - appveyor PushArtifact cbase_win_%configuration%_%platform%.zip
 
 deploy:
   release: cbase-v$(appveyor_build_version)
