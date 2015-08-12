@@ -27,3 +27,7 @@ before_build:
   - cd build
   - cmd: if "%platform%"=="x86" cmake -G"Visual Studio 12"  ..
   - cmd: if "%platform%"=="x64" cmake -G"Visual Studio 12 Win64" ..
+
+after_build:
+  - 7z a cbase_%configuration%_%platform%.zip %PROJ%/install
+  - appveyor PushArtifact cbase_%configuration%_%platform%.zip

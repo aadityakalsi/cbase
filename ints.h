@@ -77,8 +77,8 @@ typedef cb_int64            cb_ssize;
 typedef cb_uchar            cb_bool;
 
 /*! boolean true value */
-#define CB_TRUE             (cb_bool)1
+#define CB_TRUE             0x01
 /*! boolean false value */
-#define CB_FALSE            (cb_bool)0
+#define CB_FALSE            0x00
 
 #endif//CBASE_INTS_H
