@@ -29,5 +29,17 @@ before_build:
   - cmd: if "%platform%"=="x64" cmake -G"Visual Studio 12 Win64" ..
 
 after_build:
-  - 7z a cbase_%configuration%_%platform%.zip %PROJ%/install
+  - 7z a cbase_win_%configuration%_%platform%.zip %PROJ%/install
   - appveyor PushArtifact cbase_%configuration%_%platform%.zip
+
+deploy:
+  release: cbase-v$(appveyor_build_version)
+  provider: GitHub
+  auth_token:
+    secure: 0caefc8639446abb10516ae70eb7defe654bf8d1 # your encrypted token from GitHub
+  artifact: cbase_win_%configuration%_%platform%.zip
+  draft: false
+  prerelease: false
+  on:
+    branch: master                 # release from master branch only
+    appveyor_repo_tag: true        # deploy on tag push only

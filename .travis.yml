@@ -31,5 +31,15 @@ script:
   - echo y | tools/build $BTYPE
 
 after_success:
-  - if [ ${BTYPE} = "Release" ]; then tools/test_on_install Release; fi
+  - tools/test_on_install ${BTYPE}
+  - tar -czf cbase_${TRAVIS_OS_NAME}_${CXX}_${BTYPE}.tar.gz install/
+
+deploy:
+  provider: releases
+  api_key: "0caefc8639446abb10516ae70eb7defe654bf8d1"
+  file: "cbase_${TRAVIS_OS_NAME}_${CXX}_${BTYPE}.tar.gz"
+  skip_cleanup: true
+  on:
+    branch: develop
+    tags: true
 
